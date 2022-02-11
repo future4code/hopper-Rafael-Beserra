@@ -20,8 +20,8 @@ console.log("Adiferença de idade entre vocês é:", diferencaIdade)
 let numeroPar = Number(prompt("Olá, digite um número par"))
 let restoDivisao = numeroPar % 2
 console.log(restoDivisao)
-Toda divisão de um número par por 2 é igual a 0
-Toda divisão de um ímpar par por 2 é igual a 1
+// Toda divisão de um número par por 2 é igual a 0
+// Toda divisão de um ímpar par por 2 é igual a 1
 // **************************************************************************
 
 // Exercício3:
