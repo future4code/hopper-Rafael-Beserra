@@ -132,6 +132,15 @@ return string1.toLowerCase() === string2.toLowerCase()
 // EXERCÍCIO 13
 function checaRenovacaoRG() {
   // implemente sua lógica aqui
+  let anoAtual = Number(prompt("Qual o ano atual?"))
+  let anosNascimento = Number(prompt("Digite um ano de nascimento"))
+  let anoCerteiraMotorista = Number(prompt("Qual o ano de emissão da carteira de identidade?"))
+let idadeCompleta = anoAtual - anosNascimento
+let idadeCarteiraIde = anoAtual - anoCerteiraMotorista
+if((idadeCompleta <= 20) && (idadeCarteiraIde >= 5) ) { console.log(true)}else { 
+  if(((idadeCompleta > 20) && (idadeCompleta <= 50)) && (idadeCarteiraIde >= 10)) { console.log(true)}else{
+    if((idadeCompleta > 50) && (idadeCarteiraIde >= 15)){console.log(true)}else{console.log(false)}
+  } }
 
   
 }
@@ -139,11 +148,20 @@ function checaRenovacaoRG() {
 // EXERCÍCIO 14
 function checaAnoBissexto(ano) {
   // implemente sua lógica aqui
-
+  return (ano % 400 === 0) || (ano % 4 === 0 && ano % 100 != 0)
 }
 
 // EXERCÍCIO 15
 function checaValidadeInscricaoLabenu() {
   // implemente sua lógica aqui
+let idade = prompt("Você tem mais de 18 anos")
+let ensinoMedio = prompt("tem ensino médio completo?")
+let disponibilidadeHorário = prompt("tem disponibilidade de horários?")
+let idede1 = idade.includes("sim")
+let ensinoMedio1 = ensinoMedio.includes("sim")
 
+let disponibilidadeHorário1 = disponibilidadeHorário.includes("sim")
+let idadeEnsino = idede1 && ensinoMedio1
+console.log(idadeEnsino && disponibilidadeHorário1)
+// idadeEnsino && ensinoMedio1
 }
