@@ -1,0 +1,7 @@
+Os sete passos consistem basicamente no seguinte:
+1  e  2 interpretação de texto.
+3 pensar nos inputs e outputs.
+4 fazer como se fosse um organograma do código para enxergar mesmo sem estar escrito
+5 e 6 tendo os passos anteriores ficam bem mais fáceis
+7 otimizar o código
+E esses passos nos ajudam fazendo com que não fiquemos perdidos sem saber os passos de como criar um código do zero e tento uma lógica para trabalhar com algo totalmente lógico.
