@@ -1,18 +1,20 @@
 import React from "react";
 import CharacterDetailPage from "./componentes/CharacterDetailPage/CharacterDetailPage";
+import CharacterListPage from "./componentes/CharacterListPage/CharacterListPage";
 
-export default function App () {
+const App = () => {
 
     return(
       
       <div className="App">
-        <header className="App-header">
-          <h1>Star Wars</h1>
-        </header>
+        {/* <CharacterDetailPage></CharacterDetailPage> */}
+        {/* <CharacterListPage></CharacterListPage> */}
       </div>
     );
 
-}
+};
+
+export default App;
 
 // class App extends React.Component {
 
