@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ContainerCharacter = styled.div`
+export const ContainerPlanets = styled.div`
     :hover{
     cursor: pointer;
     background-color: lightblue;}
@@ -9,4 +9,3 @@ export const ContainerCharacter = styled.div`
     margin: 10px;
     width: 300px;
 `
-
