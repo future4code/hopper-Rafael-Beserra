@@ -15,7 +15,7 @@ const PlanetsDetailsPage = (props) => {
     return(
         <div>
 
-            <h1> Details of Phis Planet </h1>
+            <h1> Details Planet </h1>
             {/* <li>{props.url}</li> */}
             {/* <p>{planetDetails.name}</p> */}
             {planetDetails.name && planetDetails.climate && planetDetails.population && planetDetails.terrain ?

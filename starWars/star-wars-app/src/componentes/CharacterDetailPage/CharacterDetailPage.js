@@ -15,7 +15,7 @@ const CharacterDetailPage = (props) => {
 
     return(
         <div>
-            <h1>Character Detail Page</h1>
+            <h1>Character Detail</h1>
             {character.name && planet.name ? 
                 <div>
                     <p>Nome: {character.name}</p>
