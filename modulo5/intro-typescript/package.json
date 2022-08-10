@@ -9,7 +9,8 @@
     "exer2": "tsc && node ./build/exer2.js",
     "exer3": "tsc && node ./build/exer3.js",
     "exer4": "tsc && node ./build/exer4.js",
-    "exer5": "tsc && node ./build/exer5.js"
+    "exer5": "tsc && node ./build/exer5.js",
+    "exer6": "tsc && node ./build/exer6.js"
   },
   "keywords": [],
   "author": "",
