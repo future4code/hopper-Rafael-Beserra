@@ -3,6 +3,11 @@ type infoPosts = {
     texto: string
 }
 
+type forPost = {
+  autor: string,
+  texto: string
+}
+
 const posts: infoPosts[] = [
     {
       autor: "Alvo Dumbledore",
@@ -25,3 +30,13 @@ const posts: infoPosts[] = [
       texto: "Avada Kedavra!"
     }
   ]
+
+function buscarPostsPorAutor(posts: infoPosts[], autorInformado: string) {
+  return posts.filter(
+    (post) => {
+      return post.autor === autorInformado
+    }
+  )
+}
+
+console.log(buscarPostsPorAutor(posts, "Severo Snape"))
