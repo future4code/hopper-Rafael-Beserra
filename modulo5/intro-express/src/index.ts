@@ -9,13 +9,16 @@ app.use(express.json());
 app.use(cors())
 
 // ********************************************************************************************
+
 app.get("/", (request: Request, res: Response) => {
     const usuarios = users.map((user) => {
         return user
     }).flat(1)
     res.status(200).send(usuarios)
 })
+
 // ********************************************************************************************
+
 app.get("/usuarios/postagens", (request: Request, res: Response) => {
     const usuarios = users.map((user) => {
         return user.posts
@@ -23,7 +26,9 @@ app.get("/usuarios/postagens", (request: Request, res: Response) => {
 
     res.status(200).send(usuarios)
 })
+
 // ********************************************************************************************
+
 app.get("/usuarios", (request: Request, res: Response) => {
     const userId = Number(request.query.id)
 
