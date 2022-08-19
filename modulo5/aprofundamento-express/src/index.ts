@@ -1,6 +1,7 @@
 import express, { query, Request, Response } from "express";
 import cors from 'cors'
 import { data } from "./data";
+import { afazeres } from "./data";
 
 const app = express()
 app.use(express.json())
@@ -43,7 +44,7 @@ app.put('/afazeres/editando', (req: Request, res: Response) => {
     const id = Number(req.query.id)
     const updateTodo = req.body
 
-    data = data.map(tarefa => {
+    const Newdata = data.map(tarefa => {
         if (userId === tarefa.userId && id === tarefa.id){
             return updateTodo
         }

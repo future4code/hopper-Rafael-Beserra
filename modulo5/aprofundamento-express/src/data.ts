@@ -1,4 +1,4 @@
-type afazeres = {
+export type afazeres = {
   userId: number;
   id: number;
   title: string;
