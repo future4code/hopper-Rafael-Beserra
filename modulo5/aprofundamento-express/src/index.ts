@@ -8,7 +8,7 @@ app.use(express.json())
 app.use(cors())
 
 app.get("/ping", (req: Request, res: Response) => {
-    res.status(200).send("Pong!")
+    res.status(200).send(data)
 })
 
 // *****************************************************************************************
@@ -32,6 +32,10 @@ app.get('/afazeres', (req: Request, res: Response) => {
 app.post('/afazeres/adicionando', (req: Request, res: Response) => {
     const newTodo = req.body
     
+    if(!newTodo){
+        res.status(400).send("newTodo obrigatório")
+    }
+
     data.push(newTodo)
 
     res.status(207).send(newTodo)
@@ -44,17 +48,53 @@ app.put('/afazeres/editando', (req: Request, res: Response) => {
     const id = Number(req.query.id)
     const updateTodo = req.body
 
-    const Newdata = data.map(tarefa => {
+    if(!userId || !id || !updateTodo){
+        res.status(400).send("Obrigatórios userId, id e updateTodo ")
+    }
+
+    data.map(tarefa => {
         if (userId === tarefa.userId && id === tarefa.id){
-            return updateTodo
+            return tarefa.completed = updateTodo.completed
         }
         return tarefa
     })
 
-    res.status(200).send(updateTodo)
-
+    res.status(200).send(data)
 })
 
+// *****************************************************************************************
+
+app.delete('/afarezers/delete', (req: Request, res: Response) => {
+    const userId = Number(req.query.userId)
+
+    if(!userId){
+        res.status(400).send("userId obrigatório")
+    }
+
+    const newdata = data.filter(tarefa => {
+        if(tarefa.userId !== userId){
+            return true
+        }
+    })
+
+    res.status(200).send(newdata)
+})
+
+// *****************************************************************************************
+
+app.get('/afazeres/filter', (req: Request, res: Response) => {
+    const userId = Number(req.query.userId)
+
+    const findToDo = data.filter(tarefa => {
+        if(tarefa.userId === userId){
+            return tarefa
+        }
+    })
+
+    res.status(200).send(findToDo)
+})
+
+// *****************************************************************************************
 app.listen(3003, () => {
     console.log("Server is running in http://localhost:3003");
 });
