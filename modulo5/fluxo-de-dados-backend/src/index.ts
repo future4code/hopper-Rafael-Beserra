@@ -20,8 +20,20 @@ app.get("/test", (req: Request, res: Response) => {
 app.post("/produtos/adicionar", (req: Request, res: Response) => {
     let statusCode = 500
     try {
-        const {name, price} = req.body
-        if(!name || !price) throw new Error("Necessário informar name e price");
+        // const {name, price} = req.body
+
+        const name: string = req.body.name
+        const price: number = req.body.price
+        
+        if(!name || !price) {
+            statusCode = 409
+            throw new Error("Necessário informar name e price")
+        }
+
+        if(name !== String || price !== Number || price !== 0){
+            statusCode = 422
+            throw new Error("Parâmentros inseridos inválidos");
+        }
 
         const produtoExiste = products.find(product => product.name === name)
         if (produtoExiste) {
