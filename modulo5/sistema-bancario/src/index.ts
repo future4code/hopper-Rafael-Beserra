@@ -82,8 +82,9 @@ app.get("/contas/saldo",(req: Request, res: Response) => {
         }
 
         statusCode = 201
-        res.status(201).send(userExistente.saldo)
-
+        let saldoPesquisado = `Seu saldo atual é ${userExistente.saldo}`
+        
+        return res.status(201).send(saldoPesquisado)
     } catch (error: any) {
         statusCode = 404
         return res.status(statusCode).send({ message: error.message, status: statusCode })
@@ -135,9 +136,125 @@ app.put("/contas/addsaldo/:cpf",(req: Request, res: Response) => {
 
 // ******************************************************************************************
 
+app.put("/contas/pagarboleto",(req: Request, res: Response) => {
+    let statusCode = 500
+    try {
+        const userId = req.query.id
+        let {valor, descrição, dataPagamento} = req.body
 
+        if(!userId){
+            statusCode=422
+            throw new Error("Informar o usuário é obrigatório");
+        }
 
+        if(!valor || !descrição){
+            statusCode=422
+            throw new Error("Obrigatório informar valor e descrição");
+        }
 
+        if(typeof dataPagamento === 'undefined'){
+            dataPagamento = dataAtual()
+        }
+
+        const userExistente = contas.find(cli => cli.id === userId)
+        if(!userExistente){
+            statusCode = 409
+            throw new Error("Usuário(a) não encontrado");
+        }
+
+        if(valor > userExistente.saldo ){
+            statusCode=422
+            throw new Error("Conta não possui saldo suficiente para pagamento");
+        }
+        
+        if (dataPagamento !== dataAtual()){
+            const transacao = {
+                valor,
+                descrição,
+                dataPagamento:`Pagamento agendado para ${dataPagamento}`
+            }
+            userExistente.extrato.push(transacao)
+            res.status(statusCode).send("Pagamento agendado com sucesso")
+        } else {
+            if (dataPagamento === dataAtual()){
+                const transacao = {
+                    valor,
+                    descrição,
+                    dataPagamento,
+                }
+                userExistente.saldo=userExistente.saldo - valor
+                userExistente.extrato.push(transacao)
+                res.status(statusCode).send("Pagamento realizado com sucesso")
+            } 
+        }
+
+        statusCode = 201
+        return res.status(statusCode).send("Boleto pago com sucesso")
+    } catch (error: any) {
+        statusCode = 404
+        return res.status(statusCode).send({ message: error.message, status: statusCode })
+    }
+})
+
+// ******************************************************************************************
+
+app.put("/contas/transferencia", (req: Request, res: Response) => {
+    let statusCode = 500
+    try {
+        const userId = req.query.id
+        const userCpf = Number(req.query.cpf)
+        const {idRecebedor, cpfRecebedor, valorDepositado} = req.body
+
+        if(!userId || !userCpf){
+            statusCode = 422
+            throw new Error("Dados do usuário são obrigatórios");            
+        }
+
+        if(!idRecebedor || !cpfRecebedor || !valorDepositado){
+            statusCode=422
+            throw new Error("Dados do recebedor são obrigatórios"); 
+        }
+
+        const userExistente = contas.find(cli => cli.id === userId)
+        if(!userExistente){
+            statusCode = 409
+            throw new Error("Usuário(a) não encontrado");
+        }
+
+        const userDeposito = contas.find(cli => cli.id === idRecebedor)
+        if(!userDeposito){
+            statusCode = 409
+            throw new Error("Usuário(a) não encontrado");
+        }
+
+        if(valorDepositado > userExistente.saldo){
+            statusCode=422
+            throw new Error("Saldo insuficiente para o depósito");
+        }
+
+        userExistente.saldo=userExistente.saldo - valorDepositado
+        const transacaoDepositante = {
+            valor:idRecebedor,
+            descrição:`Transferência para ${idRecebedor}`,
+            dataPagamento:`Transferência realizada ${dataAtual()}`
+        }
+        userExistente.extrato.push(transacaoDepositante)
+        // ********************************************************************************
+        userDeposito.saldo=userDeposito.saldo + valorDepositado
+        const transacaoRecebedor = {
+            valor:valorDepositado,
+            descrição:`Transferência redecida de ${userId}`,
+            dataPagamento:`Transferência recebida ${dataAtual()}`
+        }
+        userDeposito.extrato.push(transacaoRecebedor)
+        
+        statusCode = 201
+        return res.status(statusCode).send("Transferência adicionada com sucesso")
+    } catch (error: any) {
+        statusCode = 404
+        return res.status(statusCode).send({ message: error.message, status: statusCode })
+    }
+})
 
 
 app.listen(3003, () => {
