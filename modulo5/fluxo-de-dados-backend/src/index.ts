@@ -150,12 +150,10 @@ app.delete("/produtos/delete", (req: Request, res: Response) =>{
             throw new Error("Id é obrigatórios");
         }
 
-        const productEdit = products.find(prod => prod.id === prductId)
-
-        let position = products.findIndex(indi => indi === productEdit)
+        let position = products.findIndex(indi => indi.id === prductId)
 
         products.splice(position, 1)
-
+        console.log(position)
         statusCode = 201
         return res.status(statusCode).send(products)
     } catch (error: any) {
