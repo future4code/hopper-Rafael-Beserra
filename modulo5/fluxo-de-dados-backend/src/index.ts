@@ -100,6 +100,8 @@ app.put("/produtos", (req: Request, res: Response) => {
                 }
                 return prod
             })
+            statusCode = 201
+            return res.status(statusCode).send(products)
         } else {
             if(newPrice || !newName || newPrice <= 0){
                 products.map(prod => {
@@ -109,6 +111,8 @@ app.put("/produtos", (req: Request, res: Response) => {
                     }
                     return prod
                 })
+                statusCode = 201
+                return res.status(statusCode).send(products)
             } else {
                 if(!newPrice || newName){
                     products.map(prod => {
@@ -118,6 +122,8 @@ app.put("/produtos", (req: Request, res: Response) => {
                         }
                         return prod
                     })
+                    statusCode = 201
+                    return res.status(statusCode).send(products)
                 }else{
                     statusCode = 401
                     throw new Error("Impossível editar produtos com dados informados");
@@ -125,8 +131,8 @@ app.put("/produtos", (req: Request, res: Response) => {
             }
         }
 
-        statusCode = 201
-        return res.status(statusCode).send(products)
+        // statusCode = 201
+        // return res.status(statusCode).send(products)
 
     } catch (error: any) {
         statusCode = 401
