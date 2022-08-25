@@ -10,7 +10,6 @@ app.use(cors())
 app.get("/test", (req: Request, res: Response) => {
     let statusCode = 500
     try {
-        // console.log("/test")
         return res.status(200).send("teste ok")
     } catch (error) {
         return res.status(statusCode).send("Servidor offline")
@@ -20,24 +19,20 @@ app.get("/test", (req: Request, res: Response) => {
 app.post("/produtos/adicionar", (req: Request, res: Response) => {
     let statusCode = 500
     try {
-        // const {name, price} = req.body
-
-        const name: string = req.body.name
-        const price: number = req.body.price
+        const {name, price} = req.body
         
         if(!name || !price) {
             statusCode = 409
             throw new Error("Necessário informar name e price")
         }
 
-        if(name !== String || price !== Number || price !== 0){
+        if(typeof name !== 'string' || typeof price !== 'number' || price <= 0){
             statusCode = 422
             throw new Error("Parâmentros inseridos inválidos");
         }
 
         const produtoExiste = products.find(product => product.name === name)
         if (produtoExiste) {
-            console.log
             statusCode = 409
             throw new Error("Produto já existe")
         }
@@ -74,10 +69,12 @@ app.put("/produtos", (req: Request, res: Response) => {
     let statusCode = 500
     try {
         const prductId = req.query.id
-        const newPrice = req.body
-        if(!prductId || !newPrice){
+        let newPrice = Number(req.body.price)
+        let newName: string = req.body.name
+
+        if(!prductId){
             statusCode = 401
-            throw new Error("Id e novo preço são obrigatórios");
+            throw new Error("Nome do produto obrigatórios");
         }
 
         const productEdit = products.find(prod => prod.id === prductId)
@@ -85,13 +82,48 @@ app.put("/produtos", (req: Request, res: Response) => {
             statusCode = 401
             throw new Error("Produto inexistente");
         }
-        
-        products.map(prod => {
-            if(prod.id === prductId){
-                return prod.price = newPrice
+
+        let position = products.findIndex(indi => indi === productEdit)
+        if(!newName){
+            newName= products[position].name
+        }
+
+        if(!newPrice){
+            newPrice=products[position].price
+        }
+
+        if(newPrice || newName || newPrice <= 0){
+            products.map(prod => {
+                if(prod.id === prductId){
+                    prod.price = newPrice
+                    prod.name = newName
+                }
+                return prod
+            })
+        } else {
+            if(newPrice || !newName || newPrice <= 0){
+                products.map(prod => {
+                    if(prod.id === prductId){
+                        prod.name = newName
+                        prod.price = newPrice
+                    }
+                    return prod
+                })
+            } else {
+                if(!newPrice || newName){
+                    products.map(prod => {
+                        if(prod.id === prductId){
+                            prod.name = newName
+                            prod.price = newPrice
+                        }
+                        return prod
+                    })
+                }else{
+                    statusCode = 401
+                    throw new Error("Impossível editar produtos com dados informados");
+                }
             }
-            return prod
-        })
+        }
 
         statusCode = 201
         return res.status(statusCode).send(products)
@@ -106,26 +138,20 @@ app.delete("/produtos/delete", (req: Request, res: Response) =>{
     let statusCode = 500
     try {
         const prductId = req.query.id
-        const permission = req.headers.Authorization
 
         if(!prductId){
             statusCode = 401
             throw new Error("Id é obrigatórios");
         }
-        // if(!permission){
-        //     statusCode = 401
-        //     throw new Error("Login Obrigatório");
-        // }
 
+        const productEdit = products.find(prod => prod.id === prductId)
 
-        const newProducts = products.filter(prod => {
-            if(prod.id !== prductId){
-                return prod
-            }
-        })
-        
+        let position = products.findIndex(indi => indi === productEdit)
+
+        products.splice(position, 1)
+
         statusCode = 201
-        return res.status(statusCode).send(newProducts)
+        return res.status(statusCode).send(products)
     } catch (error: any) {
         statusCode = 401
         return res.status(statusCode).send({ message: error.message, status: statusCode })
