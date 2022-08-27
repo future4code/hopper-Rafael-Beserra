@@ -7,6 +7,8 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+// ******************************************************************************************
+
 app.get("/contas/admin",(req: Request, res: Response) => {
     try {
         res.status(200).send(contas)
@@ -16,26 +18,36 @@ app.get("/contas/admin",(req: Request, res: Response) => {
 })
 
 // ******************************************************************************************
+// Conta 1
+// {
+//     "id":"rafael conta 1",
+//     "cpf":12345678900,
+//     "nascimento":"19/08/1995"
+// }
 
+// Conta 2
+// {
+//     "id":"rafael conta 2",
+//     "cpf":12345678911,
+//     "nascimento":"19/08/1995"
+// }
 app.post("/contas/criar",(req: Request, res: Response) => {
     let statusCode = 500
     try {
-        const userName = req.headers.nome
-        const userCpf = req.headers.cpf
-        const userNasc = req.headers.datadenascimento
-        if(!userName || !userCpf || !userNasc){
-            statusCode = 401
-            throw new Error("Necessário informar todos os dados");
+        const {id, cpf, nascimento} = req.body
+
+        if(!id || !cpf || !nascimento){
+            statusCode=422
+            throw new Error("necessãrio informar todos os dados solicitados");
         }
 
-        const newUserVeri = req.body.id
-
-        const userExistente = contas.find(cli => cli.id === newUserVeri)
+        const userExistente = contas.find(cli => cli.id === id)
+        
         if(userExistente){
             statusCode = 409
             throw new Error("Usuário(a) já possui conta conosco");
         }
-        const {id, cpf, nascimento} = req.body
+
         const newUser: usersTipe = 
             {
                 id,
