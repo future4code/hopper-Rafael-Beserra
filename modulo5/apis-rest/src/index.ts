@@ -142,11 +142,11 @@ app.post("/usuarios/adicionar", (req: Request, res: Response) => {
 // *****************************************************************************************************************
 
 // Alterado o 6 que já existia pois o adicionado anteriormente está com id 
-app.put("/usuarios/editar/:id", (req: Request, res: Response) => {
+app.put("/usuarios/editar/", (req: Request, res: Response) => {
   let statusCode = 500
   try {
-    let newName = req.body.name
-    const userId = Number(req.params.id)
+    let newName = String(req.body.name)
+    const userId = Number(req.body.id)
 
     if(!newName){
       statusCode=402
@@ -159,11 +159,73 @@ app.put("/usuarios/editar/:id", (req: Request, res: Response) => {
 
     if(userExistente){
       users.map(u => {
-        u.name = newName
+        if(u.id === userId){
+          u.name = `${u.name}${newName}`
+        }
+        return u
       })
+      statusCode:201
+      res.status(statusCode).send()
     }
+
+    // statusCode=201
+    // res.status(statusCode).send(userExistente)
+
+  } catch (error: any) {
+    return res.status(statusCode).send({ message: error.message, status: statusCode })
+  }
+})
+
+// *****************************************************************************************************************
+
+app.patch("/usuarios/reeditar", (req: Request, res: Response) =>{
+  let statusCode = 500
+  try {
+    let newName = String(req.body.name)
+    const userId = Number(req.body.id)
+
+    if(!newName){
+      statusCode=402
+      throw new Error("Novo nome obrigatório");
+    }
+
+    const userExistente = users.find(u => {
+      return u.id === userId
+    })
+
+    if(userExistente){
+      users.map(u => {
+        if(u.id === userId){
+          u.name = `${u.name}${newName}`
+        }
+        return u
+      })
+      statusCode:201
+      res.status(statusCode).send()
+    }
+  } catch (error: any) {
+    return res.status(statusCode).send({ message: error.message, status: statusCode })
+  }
+})
+
+// *****************************************************************************************************************
+
+app.delete("/usuarios/remover/:id", (req: Request, res: Response) =>{
+  let statusCode = 500
+  try {
+    const userId = Number(req.params.id)
+
+    if(!userId){
+      statusCode = 201
+      throw new Error("Id obigatório");
+    }
+
+    let position = users.findIndex(u => u.id === userId)
+
+    users.splice(position, 1)
+
     statusCode=201
-    res.status(statusCode).send()
+    return res.status(statusCode).send(users)
 
   } catch (error: any) {
     return res.status(statusCode).send({ message: error.message, status: statusCode })
