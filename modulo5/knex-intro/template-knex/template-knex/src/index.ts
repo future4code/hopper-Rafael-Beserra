@@ -2,6 +2,7 @@ import express, {Request, Response } from "express";
 import cors from "cors";
 import connection from "./database/connection";
 import { Funcionario } from "./type/types";
+import { stringify } from "querystring";
 
 const app = express();
 
@@ -12,11 +13,13 @@ app.get("/colaborador", async (req:Request, res:Response) => {
   let errorCode = 400
   try {
     const search = req.body.busca
+    console.log(search)
+    console.log(search.length)
 
     if(search){
       const result = await connection.raw(`
-        SELECT * FROM Funfionário_List
-        WHERE nome LIKE "%${search}%";
+      SELECT * FROM Funfionário_List
+      WHERE nome LIKE "%${search}%";
       `)
       res.status(200).send(result[0])
     } else {
@@ -25,6 +28,23 @@ app.get("/colaborador", async (req:Request, res:Response) => {
       `)
       res.status(200).send(result[0])
     }
+    
+    // const search = String(req.params.nome)
+    // console.log(search)
+    // console.log(search.length)
+
+    // if(search !== ":nome"){
+    //   const result = await connection.raw(`
+    //     SELECT * FROM Funfionário_List
+    //     WHERE nome LIKE "%${search}%";
+    //   `)
+    //   res.status(200).send(result[0])
+    // } else {
+    //   const result = await connection.raw(`
+    //   SELECT * FROM Funfionário_List
+    //   `)
+    //   res.status(200).send(result[0])
+    // }
   } catch (error) {
     res.status(errorCode).send(error.message)
   }
