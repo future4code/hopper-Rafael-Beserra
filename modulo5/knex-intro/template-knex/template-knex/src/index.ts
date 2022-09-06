@@ -23,7 +23,7 @@ app.get("/colaborador", async (req:Request, res:Response) => {
       const result = await connection.raw(`
       SELECT * FROM Funfionário_List
       `)
-      res.status(200).send(result)
+      res.status(200).send(result[0])
     }
   } catch (error) {
     res.status(errorCode).send(error.message)
@@ -45,9 +45,11 @@ app.post("/colaborador/criar", async (req:Request, res:Response) =>{
       throw new Error("Email informado inválido");
     }
     
-    const emailExist = await connection("Funfionário_List").select().where(email);
-    
-    if(emailExist[0].length > 0){
+    const emailExist = await connection("Funfionário_List").select("*").where({email});
+
+    console.log(emailExist)
+
+    if(emailExist.length > 0){
       throw new Error("Usuário já cadastrado");
     }
     
@@ -56,7 +58,7 @@ app.post("/colaborador/criar", async (req:Request, res:Response) =>{
     }
 
     const newCollaborator: Funcionario = {
-      id: String(Date.now()),
+      id: "008",
       nome,
       email
     }
@@ -88,23 +90,23 @@ app.put("/colaborador/:id", async (req:Request, res:Response) =>{
       throw new Error("Email informado inválido");
     }
     
-    const idExist = await connection("Funfionário_List").select().where(id);
+    const idExist = await connection("Funfionário_List").select("*").where({id});
 
-    if(idExist.length === 0){
+    if(idExist.length < 1){
       throw new Error("Usuário não encontrado");
     }
 
-    const emailExist = await connection("Funfionário_List").select().where(email);
+    const emailExist = await connection("Funfionário_List").select("*").where({email});
     
-    if(emailExist[0].length > 0){
+    if(emailExist.length > 0){
       throw new Error("Email já cadastrado");
     }
 
     await connection("Funfionário_List")
-    .update(email)
-    .where(id);
+    .update({email})
+    .where({id});
 
-
+    res.status(200).send("Email editado com sucesso")
   } catch (error) {
     res.status(errorCode).send(error.message)
   }
@@ -117,7 +119,7 @@ app.delete("/colaborador/:id", async (req:Request, res:Response) =>{
   try {
     const id = req.params.id
 
-    const idExist = await connection("Funfionário_List").select().where(id);
+    const idExist = await connection("Funfionário_List").select().where({id});
 
     if(idExist.length === 0){
       throw new Error("Usuário não encontrado");
