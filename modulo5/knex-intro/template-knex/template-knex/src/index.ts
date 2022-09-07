@@ -2,7 +2,7 @@ import express, {Request, Response } from "express";
 import cors from "cors";
 import connection from "./database/connection";
 import { Funcionario } from "./type/types";
-import { stringify } from "querystring";
+import { v4 as generateId } from 'uuid';
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.use(cors());
 app.get("/colaborador", async (req:Request, res:Response) => {
   let errorCode = 400
   try {
-    const search = req.body.busca
+    const search = req.query.busca
     console.log(search)
     console.log(search.length)
 
@@ -29,22 +29,6 @@ app.get("/colaborador", async (req:Request, res:Response) => {
       res.status(200).send(result[0])
     }
     
-    // const search = String(req.params.nome)
-    // console.log(search)
-    // console.log(search.length)
-
-    // if(search !== ":nome"){
-    //   const result = await connection.raw(`
-    //     SELECT * FROM Funfionário_List
-    //     WHERE nome LIKE "%${search}%";
-    //   `)
-    //   res.status(200).send(result[0])
-    // } else {
-    //   const result = await connection.raw(`
-    //   SELECT * FROM Funfionário_List
-    //   `)
-    //   res.status(200).send(result[0])
-    // }
   } catch (error) {
     res.status(errorCode).send(error.message)
   }
@@ -54,6 +38,7 @@ app.get("/colaborador", async (req:Request, res:Response) => {
 
 app.post("/colaborador/criar", async (req:Request, res:Response) =>{
   let errorCode = 400
+  const regExp = /^(\w+)@[a-z]+(\.[a-z]+){1,2}$/i;
   try {
     const {nome, email} = req.body
 
@@ -61,10 +46,10 @@ app.post("/colaborador/criar", async (req:Request, res:Response) =>{
       throw new Error("Necessário informar usuário e senha");
     }
 
-    if(email.includes("@") !== true){
+    if(regExp.test(email) !== true){
       throw new Error("Email informado inválido");
     }
-    
+
     const emailExist = await connection("Funfionário_List").select("*").where({email});
 
     console.log(emailExist)
@@ -78,7 +63,7 @@ app.post("/colaborador/criar", async (req:Request, res:Response) =>{
     }
 
     const newCollaborator: Funcionario = {
-      id: "008",
+      id: generateId(),
       nome,
       email
     }
