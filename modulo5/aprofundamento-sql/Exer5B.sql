@@ -1,0 +1,1 @@
+SELECT name, dueDate FROM Projetos_Empresas ORDER BY dueDate ASC LIMIT 2;

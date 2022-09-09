@@ -1,0 +1,1 @@
+SELECT id, name, dueDate, description FROM Projetos_Empresas ORDER BY dueDate DESC;
