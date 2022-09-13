@@ -172,8 +172,30 @@ app.get(`/task/:id`, async (req:Request, res:Response) => {
       throw new Error("Usuário não encontrado");
     }
 
-    // console.log(idExist)
-    res.status(200).send(idExist[0])
+    // const datapadrao = await connection.raw(`
+    //   SELECT limit_date, 
+    //   CONCAT(YEAR(limit_date),'-', LPAD(MONTH(limit_date),2,'0'),'-',LPAD(DAY(limit_date),2,'0')) AS "limit_date" FROM TodoListTask LIMIT 5;
+    // `)
+
+    const datapadrao = await connection.raw(`
+      SELECT limit_date, 
+      CONCAT(DAY(limit_date),'-',
+      LPAD(MONTH(limit_date),2,'0'),'-',
+      LPAD(YEAR(limit_date),4,'0')) AS "limit_date" FROM TodoListTask LIMIT 5;
+    `)
+
+
+
+    let dataUs = await connection.raw(`
+      SELECT id, title, description, status, limit_date, creator_user_id FROM TodoListTask
+      WHERE id = "${id}";
+    `)
+
+    // console.log(dataUs[0])
+    // res.status(200).send(dataUs[0])
+
+    console.log(dataUs)
+    res.status(200).send(dataUs)
 
   } catch (error) {
     res.status(errorCode).send(error.message)
