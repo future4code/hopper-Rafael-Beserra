@@ -9,13 +9,22 @@ export const searchProduct = async (
 ): Promise<void> => {
   let errorCode = 400;
   try {
+    let order = req.query.order as string
+    let name = req.query.name as string
 
-    const allProducts = await connection.raw(`
-      SELECT * FROM labecommerce_users;
+    if (order && order.toUpperCase() !== "ASC" && order.toUpperCase() !== "DESC") {
+      order = "ASC"
+    }  
+    
+    const Products = await connection.raw(`
+      SELECT * FROM labecommerce_products
+      WHERE name LIKE "%${name}%"
+      ORDER BY name ${order};
     `)
 
-    res.status(200).send(allProducts[0]);
+    res.status(200).send(Products[0]);
   } catch (error :any) {
     res.status(500).send(error.message);
   }
 };
+

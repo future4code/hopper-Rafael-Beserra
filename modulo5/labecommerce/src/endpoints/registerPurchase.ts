@@ -9,15 +9,20 @@ export const registerPurchase = async (
 ): Promise<void> => {
   let errorCode = 400;
   try {
-    let { user_id, product_id, quantity } = req.body;
+    let quantity = Number(req.body.quantity)
+    let user_id = req.body.userId
+    let product_id = req.body.productId
 
     if(!user_id || !product_id || !quantity){
       throw new Error("Necessário informar todos os dados");
     }
     
     // const emailExist = await connection("labecommerce_users").select("*").where(email);
-
-    let total_price = 0
+    const productExist = await connection.raw(`
+      SELECT price FROM labecommerce_products
+      WHERE id = "${product_id}";
+    `)
+    let total_price = productExist[0][0].price * quantity
 
     let newPurchase: Purchase = {
       id: generateId(),
@@ -28,7 +33,7 @@ export const registerPurchase = async (
     };
 
     await connection.raw(`
-      INSERT INTO labecommerce_purchases(id, name, price, image_url)
+      INSERT INTO labecommerce_purchases(id, user_id, product_id, quatity, total_price)
       VALUES("${newPurchase.id}", "${newPurchase.user_id}", "${newPurchase.product_id}", "${newPurchase.quantity}", "${newPurchase.total_price}");
     `)
 

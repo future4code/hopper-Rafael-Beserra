@@ -9,15 +9,9 @@ export const searchUser = async (
 ): Promise<void> => {
   let errorCode = 400;
   try {
-    let order = req.params.order
-
-    if (order && order.toUpperCase() !== "ASC" && order.toUpperCase() !== "DESC") {
-      order = "ASC"
-    }    
 
     const allUsers = await connection.raw(`
-      SELECT * FROM labecommerce_users
-      ORDER BY 
+      SELECT * FROM labecommerce_users;
     `)
 
     res.status(200).send(allUsers[0]);

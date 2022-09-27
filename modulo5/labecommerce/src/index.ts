@@ -13,4 +13,4 @@ app.post("/products", registerProduct)
 app.get("/products", searchProduct)
 
 app.post("/purchases", registerPurchase)
-app.get("/users/:user_id/purchases", searchHistoryPurchase)
+app.get("/users/:userId/purchases", searchHistoryPurchase)
