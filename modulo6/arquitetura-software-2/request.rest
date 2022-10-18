@@ -9,12 +9,12 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3003/task
+POST http://localhost:3003/movie/insert
 Content-Type: application/json
 
 {
-    "title": "aula arquitetura II",
-    "description": "aula top",
-    "deadline": "13/10",
-    "authorId": "1665700222521"
+    "title": "filme teste",
+    "description": "filme teste",
+    "duration_in_minutes": "120",
+    "year_of_release": "2000"
 }

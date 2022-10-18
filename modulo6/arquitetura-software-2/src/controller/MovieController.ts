@@ -6,10 +6,9 @@ export class MovieController {
         req: Request, res: Response
     ) => {
         try {
-            const {name, title, description, duration_in_minutes, year_of_release} = req.body
+            const {title, description, duration_in_minutes, year_of_release} = req.body
 
             const input = {
-                name,
                 title,
                 description,
                 duration_in_minutes,

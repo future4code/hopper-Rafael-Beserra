@@ -4,18 +4,14 @@ import { MovieDatabase } from "../data/MovieDatabase";
 export class MovieBusiness {
     public addMovie = async (input: any) => {
         try {
-            const {name, title, description, duration_in_minutes, year_of_release} = input
+            const {title, description, duration_in_minutes, year_of_release} = input
 
-            if(!name){
-                throw new Error("Nome do filme não informado");
-            }
-
-            const id = generateId ()
+            const id = generateId()
 
             const movieDatabase = new MovieDatabase()
 
             await movieDatabase.insertMovie({
-                name,
+                id,
                 title,
                 description,
                 duration_in_minutes,

@@ -5,10 +5,10 @@ import { BaseDatabase } from "./BaseDatabase";
 export class MovieDatabase extends BaseDatabase {
     private static TABLE_NAME = "LABEFLIX_MOVIE";
 
-    async insertMovie({name, title, description, duration_in_minutes, year_of_release}: Movie){
+    async insertMovie({id, title, description, duration_in_minutes, year_of_release}: Movie){
         await MovieDatabase.connection
         .insert({
-            name,
+            id,
             title,
             description,
             duration_in_minutes,
