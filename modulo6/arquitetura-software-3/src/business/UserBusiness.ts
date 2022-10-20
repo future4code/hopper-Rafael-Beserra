@@ -1,4 +1,7 @@
 import { UserDatabase } from "../data/UserDatabase";
+import { InvalidEmail } from "../error/InvalidEmail";
+import { ShortName } from "../error/ShortName";
+import { generateID } from "../services/generateId";
 
 export class UserBusiness {
    public createUser = async (input: any) => {
@@ -14,7 +17,15 @@ export class UserBusiness {
             throw new Error('Preencha os campos "name","nickname", "email" e "password"')
          }
 
-         const id: string = Date.now().toString()
+         if (!email.includes("@")) {
+            throw new InvalidEmail()
+         }
+
+         if (name.length < 3) {
+            throw new ShortName()
+         }
+
+         const id: string = generateID()
 
          const userDatabase = new UserDatabase()
 

@@ -1,4 +1,6 @@
 import { TaskDatabase } from "../data/TaskDatabase"
+import { ShortName } from "../error/ShortName"
+import { generateID } from "../services/generateId"
 
 
 export class TaskBusiness {
@@ -18,7 +20,11 @@ export class TaskBusiness {
             throw new Error('"title", "description", "deadline" e "authorId" são obrigatórios')
          }
 
-         const id: string = Date.now().toString()
+         if(title.length < 3) {
+            throw new ShortName()
+         }
+
+         const id: string = generateID()
 
          const taskDatabase = new TaskDatabase()
 
