@@ -1,3 +1,4 @@
+-- Active: 1664324365081@@35.226.146.116@3306@Hopper-4314167-rafael-beserra
 CREATE TABLE
     IF NOT EXISTS labook_users(
         id VARCHAR(255) PRIMARY KEY,

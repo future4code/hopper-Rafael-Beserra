@@ -1,0 +1,8 @@
+POST http://localhost:3003/labook/criar-usuario
+Content-Type: application/json
+
+{
+    "name": "teste1",
+    "email": "teste1@gmail.com.br",
+    "password": "123456"
+}

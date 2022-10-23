@@ -5,4 +5,4 @@ export const socialRouter = express.Router()
 
 const socialController = new SocialController()
 
-socialRouter.post("/create", socialController.createUser)
+socialRouter.post("/criar-usuario", socialController.createUser)

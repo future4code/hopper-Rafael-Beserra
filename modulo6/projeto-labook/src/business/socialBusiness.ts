@@ -1,10 +1,11 @@
 import { SocialDatabase } from "../data/socialDatabase"
 import { InvalidEmail } from "../error/InvalidEmail"
 import { ShortName } from "../error/ShortName"
+import { userInputDTO } from "../model/userDTO"
 import { generateId } from "../services/generateId"
 
 export class SocialBusiness {
-    public createUser = async (input: any) => {
+    public createUser = async (input: userInputDTO) => {
         try {
             const {name, email, password} = input
 
