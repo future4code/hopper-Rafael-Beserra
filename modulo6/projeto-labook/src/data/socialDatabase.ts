@@ -33,4 +33,11 @@ export class SocialDatabase extends BaseDatabase{
         }
     }
     
+    public searchByName = async (id: string) => {
+        try {
+            await SocialDatabase.connection.select("id").from(this.postTable).where("id", "like", `%${id}%` )
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
 }

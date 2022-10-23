@@ -3,6 +3,21 @@ Content-Type: application/json
 
 {
     "name": "teste1",
-    "email": "teste1@gmail.com.br",
+    "email": "agua@gmail.com.br",
     "password": "123456"
 }
+
+###
+POST http://localhost:3003/labook/post-criar
+Content-Type: application/json
+
+{
+    "photo": "photo1",
+    "description": "comentario1",
+    "type": "normal",
+    "createdAt": "2022/10/22",
+    "authorId": "3052a49a-7f39-42b2-a9b1-ee9a46572f1f"
+}
+
+###
+GET http://localhost:3003/labook/busca-post/:id
