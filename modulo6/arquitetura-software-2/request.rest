@@ -1,0 +1,20 @@
+POST http://localhost:3003/user/create
+Content-Type: application/json
+
+{
+    "name": "Pedro2",
+    "nickname": "Peu2",
+    "email": "peu2@email.com",
+    "password": "123456"
+}
+
+###
+POST http://localhost:3003/movie/insert
+Content-Type: application/json
+
+{
+    "title": "filme teste",
+    "description": "filme teste",
+    "duration_in_minutes": "120",
+    "year_of_release": "2000"
+}
