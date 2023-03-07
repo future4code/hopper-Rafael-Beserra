@@ -1,0 +1,38 @@
+-- Active: 1664324365081@@35.226.146.116@3306@Hopper-4314167-rafael-beserra
+
+CREATE TABLE IF NOT EXISTS PIZZARIA_User (
+    id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(64) NOT NULL,
+    email VARCHAR(64) NOT NULL,
+    password VARCHAR(64) NOT NULL,
+    role ENUM("NORMAL","ADMIN") DEFAULT "NORMAL"
+);
+
+CREATE TABLE IF NOT EXISTS PIZZARIA_Menu (
+    id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DOUBLE NOT NULL,
+    ingredients TEXT NOT NULL,
+    cratedAt DATE,
+    author_id VARCHAR(64),
+    FOREIGN KEY (author_id) REFERENCES PIZZARIA_User(id)
+);
+
+CREATE TABLE IF NOT EXISTS PIZZARIA_item_Order (
+    id VARCHAR(64) PRIMARY KEY,
+    item_id VARCHAR(64) NOT NULL,
+    item_name VARCHAR(100) NOT NULL,
+    quantity INT NOT NULL,
+    cratedAt DATE,
+    FOREIGN KEY (id_item) REFERENCES PIZZARIA_Item (id)
+);
+
+CREATE TABLE IF NOT EXISTS PIZZARIA_Order (
+    id VARCHAR(64) PRIMARY KEY,
+    user_id VARCHAR(64) NOT NULL,
+    item_id VARCHAR(64) NOT NULL,
+    item_name VARCHAR(100) NOT NULL,
+    item_price DOUBLE NOT NULL,
+    quantity INT NOT NULL,
+    total_price DOUBLE NOT NULL
+);
