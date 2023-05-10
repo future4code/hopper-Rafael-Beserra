@@ -4,7 +4,6 @@ import {
   InvalidEmail,
   InvalidName,
   InvalidPassword,
-  InvalidRole,
   Unauthorized,
   UserAlreadyExist,
   UserNotFound,
@@ -14,16 +13,13 @@ import {
   EditUserInputDTO,
   EditUserInput,
   LoginInputDTO,
-  UserRole,
-  AuthenticationData,
-  UserInsert,
   User,
-  FindIdDTO,
-  FindIdIdDTO,
+  TokenDTO,
 } from "./model/user";
 import { HashManager } from "../services/HashManager";
 import { IdGenerator, IdGeneratorInterface } from "../services/IdGenerator";
 import { TokenGenerator } from "../services/TokenGenerator";
+import { Address, AddressInputDTO } from "./model/address";
 
 export class UserBusiness {
   constructor(
@@ -36,9 +32,8 @@ export class UserBusiness {
   public createUser = async (input: UserInputDTO): Promise<string> => {
     try {
       const { name, email, password, role } = input;
-      
 
-      if (!name  || !email || !password) {
+      if (!name || !email || !password) {
         throw new CustomError(
           400,
           'Preencha os campos "name", "email", "password"'
@@ -53,26 +48,54 @@ export class UserBusiness {
         throw new InvalidEmail();
       }
 
-      const findUserById = await this.userDatabase.findUser(email)
-      console.log(findUserById)
+      const findUserById = await this.userDatabase.findUser(email);
 
-      if (findUserById){
+      if (findUserById) {
         throw new UserAlreadyExist();
       }
 
       const id: string = this.idGenerator.generateId();
 
       const hashPassword: string = await this.hashManager.hash(password);
-      // console.log(hashPassword)
-      const user = new User(id, name, email, hashPassword) 
 
-      
+      const user = new User(id, name, email, hashPassword);
+
       await this.userDatabase.createUser(user);
-      const authentication = new TokenGenerator().generateToken(user.getId())
-      // const token = this.tokenGenerator.generateToken(id);
-      // return token;
-      return authentication;
+      const authentication = new TokenGenerator().generateToken(
+        user.getId(),
+        user.getRole()
+      );
 
+      return authentication;
+    } catch (error: any) {
+      throw new CustomError(400, error.message);
+    }
+  };
+
+  public addAddress = async (input: AddressInputDTO) => {
+    try {
+      const { street, number, zipcode, token } = input;
+
+      if (!street || !number || !zipcode) {
+        throw new CustomError(
+          400,
+          'Preencha os campos "street", "number", "zipcode"'
+        );
+      }
+
+      const data = this.tokenGenerator.getTokenData(token);
+
+      if (!data.id) {
+        throw new Unauthorized();
+      }
+
+      const id: string = this.idGenerator.generateId();
+
+      const user_id = data.id;
+
+      const address = new Address(id, user_id, street, number, zipcode);
+
+      const resultAddress = await this.userDatabase.addAddress(address);
     } catch (error: any) {
       throw new CustomError(400, error.message);
     }
@@ -105,7 +128,7 @@ export class UserBusiness {
         throw new InvalidPassword();
       }
 
-      const token = this.tokenGenerator.generateToken(user.id);
+      const token = this.tokenGenerator.generateToken(user.id, user.role);
 
       return token;
     } catch (error: any) {
@@ -126,7 +149,6 @@ export class UserBusiness {
 
       const data = this.tokenGenerator.getTokenData(token);
 
-
       if (!data.id) {
         throw new Unauthorized();
       }
@@ -138,7 +160,7 @@ export class UserBusiness {
       const editUserInput: EditUserInput = {
         name,
         email,
-        id
+        id,
       };
 
       await this.userDatabase.editUser(editUserInput);
@@ -147,35 +169,50 @@ export class UserBusiness {
     }
   };
 
-  public findUserByToken = async (input: FindIdDTO) => {
+  public findUserByToken = async (input: TokenDTO) => {
     try {
-      const {token} = input;
+      const { token } = input;
 
-      const {id} = this.tokenGenerator.getTokenData(token)
+      const { id } = this.tokenGenerator.getTokenData(token);
 
-      const user = await this.userDatabase.findUserById(id)
+      const user = await this.userDatabase.findUserById(id);
 
-      return user
-      
-    } catch (error:any) {
-      throw new CustomError(400, error.message)
+      return user;
+    } catch (error: any) {
+      throw new CustomError(400, error.message);
     }
-  }
+  };
 
-  // public findOtherUserById = async (token: string, id: string) => {
-  //   try {
-  //     const idUser = this.tokenGenerator.getTokenData(token)
+  public findAddressByToken = async (input: TokenDTO) => {
+    try {
+      const { token } = input;
 
-  //     if(!idUser){
-  //       throw new Unauthorized();
-  //     }
+      const { id } = this.tokenGenerator.getTokenData(token);
 
-  //     const user = await this.userDatabase.findUserById(id)
+      const address = await this.userDatabase.findAddress(id);
 
-  //     return user
-  //   } catch (error:any) {
-  //     throw new CustomError(400, error.message)
-  //   }
-  // }
+      return address;
+    } catch (error: any) {
+      throw new CustomError(400, error.message);
+    }
+  };
 
+  public tokenValidation = async (input: TokenDTO) => {
+    try {
+      const { token } = input;
+
+      let login: string = "";
+
+      const result = this.tokenGenerator.getTokenData(token);
+
+      if (result) {
+        login = "LOGGED";
+      }
+
+      return login;
+    } catch (error: any) {
+      let login = "NOTLOGGED";
+      return login;
+    }
+  };
 }

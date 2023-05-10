@@ -1,10 +1,10 @@
 import * as jwt from "jsonwebtoken";
-import { AuthenticationData } from "../business/model/user";
+import { AuthenticationData, UserRole } from "../business/model/user";
 
 export class TokenGenerator {
-  public generateToken = (id: string) => {
-    const token = jwt.sign({ id}, process.env.JWT_KEY as string, {
-      expiresIn: "2h",
+  public generateToken = (id: string, role: UserRole) => {
+    const token = jwt.sign({ id, role }, process.env.JWT_KEY as string, {
+      expiresIn: "1h",
     });
     return token;
   };
@@ -16,7 +16,8 @@ export class TokenGenerator {
     ) as jwt.JwtPayload;
 
     return {
-      id: payload.id as string
+      id: payload.id as string,
+      role: UserRole[payload.role as keyof typeof UserRole],
     };
   };
 }

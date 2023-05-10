@@ -2,31 +2,40 @@ import { serialize } from "v8";
 import { MenuDatabase } from "../data/MenuDatabase";
 import { CustomError, Unauthorized } from "../error/customError";
 import { TokenGenerator } from "../services/TokenGenerator";
-import { FindIdDTO, FindRecipeByID, Recipe, RecipeInfosDTO, RecipeInputDTO, TokenDTO } from "./model/menu";
+import {
+  DeleteRecipeByID,
+  FindIdDTO,
+  FindRecipeByID,
+  Recipe,
+  RecipeInfosDTO,
+  RecipeInputDTO,
+  TokenInputDTO,
+} from "./model/menu";
 import { IdGeneratorInterface } from "../services/IdGenerator";
+import { UserRole } from "./model/user";
 
 export class MenuBusiness {
   constructor(
     private readonly menuDatabase: MenuDatabase,
     private readonly tokenGenerator: TokenGenerator,
-    private readonly idGenerator: IdGeneratorInterface,
-  ){}
-    
+    private readonly idGenerator: IdGeneratorInterface
+  ) {}
+
   public createRecipe = async (input: RecipeInputDTO) => {
     try {
-      const {name, ingredients, price, token} = input;
+      const { title, description, image, price, token } = input;
 
       const idUser = this.tokenGenerator.getTokenData(token);
-      console.log(idUser)
-      if(!idUser){
+
+      if (!idUser) {
         throw new Unauthorized();
       }
 
-      if(!name || !price || !ingredients){
+      if (!title || !price || !description) {
         throw new CustomError(
           400,
           'Preencha os campos "name", "price" e "ingredients"'
-        )
+        );
       }
 
       const id: string = this.idGenerator.generateId();
@@ -35,70 +44,49 @@ export class MenuBusiness {
 
       const recipe = new Recipe(
         id,
-        name,
+        title,
         price,
-        ingredients,
+        description,
+        image,
         createAt,
         idUser.id
       );
-      
-      await this.menuDatabase.addRecipe(recipe)
 
-    } catch (error:any) {
+      await this.menuDatabase.addRecipe(recipe);
+    } catch (error: any) {
       throw new CustomError(400, error.message);
     }
   };
 
-  public findAllRecipes = async (input: TokenDTO) => {
+  public findAllRecipes = async () => {
     try {
-      const {token} = input;
+      const recipe = await this.menuDatabase.findAllRecipes();
 
-      if (!token){
-        throw new CustomError(
-          400,
-          'Token não informado'
-        );
-      }
-
-      const data = this.tokenGenerator.getTokenData(token)
-      
-      if(!data.id){
-        throw new Unauthorized();
-      }
-
-      await this.menuDatabase.findAllRecipes();
-    } catch (error:any) {
+      return recipe;
+    } catch (error: any) {
       throw new CustomError(400, error.message);
     }
   };
 
   public findRecipeById = async (input: FindRecipeByID) => {
     try {
-      // const id = input.id;
-      // const token = input.token;
+      const { id, token } = input;
 
-      const {id , token} = input;
-
-      if(!id || !token){
-        throw new CustomError(
-          400,
-          "Preencha os campos id e token"
-        );
+      if (!id || !token) {
+        throw new CustomError(400, "Preencha os campos id e token");
       }
 
-      const data = this.tokenGenerator.getTokenData(token)
+      const data = this.tokenGenerator.getTokenData(token);
 
-      if(!data.id){
+      if (!data.id) {
         throw new Unauthorized();
       }
-      
-      const recipe = await this.menuDatabase.findRecipeByID(id)
 
-      console.log(recipe)
-      return recipe
+      const recipe = await this.menuDatabase.findRecipeByID(id);
 
-    } catch (error:any) {
+      return recipe;
+    } catch (error: any) {
       throw new CustomError(400, error.message);
     }
-  }
+  };
 }

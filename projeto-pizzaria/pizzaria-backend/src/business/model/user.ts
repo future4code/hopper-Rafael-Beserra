@@ -65,9 +65,10 @@ export interface EditUserInput {
 
 export interface AuthenticationData {
   id: string;
+  role: UserRole;
 }
 
-export interface FindIdDTO {
+export interface TokenDTO {
   token: string
 }
 

@@ -1,5 +1,5 @@
 {
-    "name": "to-do-list",
+    "name": "pizzaria-rafael",
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
@@ -7,14 +7,14 @@
         "dev": "tsnd --transpile-only --ignore-watch node_modules ./src/index.ts",
         "test": "ts-node-dev ./src/services/authenticator.ts"
     },
-    "author": "Labenu",
+    "author": "Rafael",
     "license": "ISC",
     "dependencies": {
         "cors": "^2.8.5",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
-        "jsonwebtoken": "^8.5.1",
-        "knex": "^0.21.5",
+        "jsonwebtoken": "^9.0.0",
+        "knex": "^2.4.0",
         "mysql": "^2.18.1",
         "uuid": "^9.0.0"
     },

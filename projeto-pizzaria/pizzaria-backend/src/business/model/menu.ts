@@ -1,9 +1,10 @@
 export class Recipe {
     constructor(
       private id: string,
-      private name: string,
+      private title: string,
       private price: number,
-      private ingredients: string,
+      private description: string,
+      private image: string,
       private cratedAt: Date,
       private author_id: string,
     ){}
@@ -12,7 +13,7 @@ export class Recipe {
     }
   
     getName():string{
-      return this.name
+      return this.title
     }
   
     getPrice():number{
@@ -20,9 +21,13 @@ export class Recipe {
     }
   
     getIngredients():string{
-      return this.ingredients
+      return this.description
     }
     
+    getImage():string{
+      return this.image
+    }
+
     getCreateAd():Date{
       return this.cratedAt
     }  
@@ -33,30 +38,36 @@ export class Recipe {
 }
 
 export interface RecipeInfosDTO{
-    name: string;
+    title: string;
     price: number;
-    ingredients: string;
+    description: string;
     token: string;
     cratedAt: Date;
     author_id: string;
 }
 
 export interface RecipeInputDTO{
-    name: string;
-    ingredients: string;
+    title: string;
+    description: string;
     price: number;
+    image: string;
     token: string
 }
 
-export interface TokenDTO{
-    token: string
+export interface TokenInputDTO{
+    token: string;
 }
 
 export interface FindIdDTO{
-  id: string
+  id: string;
 }
 
 export interface FindRecipeByID{
   id: string;
   token: string
+}
+
+export interface DeleteRecipeByID{
+  id: string;
+  token: string;
 }

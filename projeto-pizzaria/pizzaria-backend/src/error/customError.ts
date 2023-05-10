@@ -44,3 +44,9 @@ export class UserAlreadyExist extends CustomError {
     super(401, "Usuário já existe");
   }
 }
+
+export class InvalidZipcode extends CustomError {
+  constructor() {
+    super(400, "Cep Inválido")
+  }
+}

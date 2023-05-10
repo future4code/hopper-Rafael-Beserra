@@ -1,29 +1,68 @@
 export class OrderItem {
-    constructor(
-        private id: string,
-        private id_item: string,
-        private quantity: number,
-        private cratedAt: Date
-    ){}
-    getId():string{
-        return this.id
-    }
+  constructor(
+    private id: string,
+    private item_id: string,
+    private item_name: string,
+    private item_price: number,
+    private quantity: number,
+    private total_price: number,
+    private createdAt: Date
+  ) {}
+  getId(): string {
+    return this.id;
+  }
 
-    getIdItem():string{
-        return this.id_item
-    }
+  getItemId(): string {
+    return this.item_id;
+  }
 
-    getQuantity():number{
-        return this.quantity
-    }
+  getItemName(): string {
+    return this.item_name;
+  }
 
-    getCratedAt():Date{
-        return this.cratedAt
-    }
+  getItemPrice(): number {
+    return this.item_price;
+  }
+
+  getQuantity(): number {
+    return this.quantity;
+  }
+
+  getTotalPrice(): number {
+    return this.total_price;
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt;
+  }
 }
 
-export interface OrderItemDTO{
-    id_item: string;
-    quantity: number;
-    token: string;
+export interface ItemOrderDTO {
+  token: string;
+  order_id: string;
+}
+
+export class OrderCart {
+  constructor(
+    private id: string,
+    private author_id: string,
+    private createAt: string,
+    private description: string,
+    private title: string,
+    private price: number,
+    private image: string,
+    private quantity: number
+  ) {}
+}
+
+export interface OrderCartDTO {
+  cart: OrderCart;
+}
+
+export interface ItemOrderId {
+  id: string;
+}
+
+export interface ItemOrderTokenDTO {
+  token: string;
 }

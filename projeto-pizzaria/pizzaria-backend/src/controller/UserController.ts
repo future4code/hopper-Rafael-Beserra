@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { UserBusiness } from "../business/UserBusiness";
-import { EditUserInputDTO, FindIdDTO, LoginInputDTO, UserInputDTO } from "../business/model/user";
-import { UserDatabase } from "../data/UserDatabase";
+import {
+  EditUserInputDTO,
+  TokenDTO,
+  LoginInputDTO,
+  UserInputDTO,
+} from "../business/model/user";
+import { AddressInputDTO } from "../business/model/address";
 
 export class UserController {
   constructor(private readonly userBusiness: UserBusiness) {}
@@ -11,15 +16,32 @@ export class UserController {
       const { name, email, password, role } = req.body;
 
       const input: UserInputDTO = {
-        name,        
+        name,
         email,
         password,
-        role
+        role,
       };
 
       const token = await this.userBusiness.createUser(input);
 
       res.status(201).send({ message: "Usuário criado!", token });
+    } catch (error: any) {
+      res.status(400).send(error.message);
+    }
+  };
+
+  public registerAddress = async (req: Request, res: Response) => {
+    try {
+      const input: AddressInputDTO = {
+        street: req.body.street,
+        number: req.body.number,
+        zipcode: req.body.zipcode,
+        token: req.headers.authorization as string,
+      };
+
+      const address = this.userBusiness.addAddress(input);
+
+      res.status(201).send({ message: "endereço adicionado!" });
     } catch (error: any) {
       res.status(400).send(error.message);
     }
@@ -60,36 +82,48 @@ export class UserController {
 
   public findUserByToken = async (req: Request, res: Response) => {
     try {
-      const input: FindIdDTO = {
-        token: req.headers.authorization as string
-      }
+      const input: TokenDTO = {
+        token: req.headers.authorization as string,
+      };
 
-      const user = await this.userBusiness.findUserByToken(input)
+      const user = await this.userBusiness.findUserByToken(input);
 
-      // const userData = {
-      //   id: user.id,
-      //   name: user.name,
-      //   email: user.email
-      // }
-
-      res.status(201).send({message: "Dados do usuário", id: user.id, name: user.name, email: user.email})
+      res.status(201).send({
+        message: "Dados do usuário",
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      });
     } catch (error: any) {
-      res.status(400).send(error.message)
+      res.status(400).send(error.message);
     }
-  }
+  };
 
-  // public findOtherUserById = async (req: Request, res: Response) => {
-  //   try {
-  //     const token = req.headers.authorization as string;
+  public findAddressByToken = async (req: Request, res: Response) => {
+    try {
+      const input: TokenDTO = {
+        token: req.headers.authorization as string,
+      };
 
-  //     const id = req.params.id
+      const address = await this.userBusiness.findAddressByToken(input);
 
-  //     const user = await this.userBusiness.findOtherUserById(token, id)
+      res.status(201).send({ message: "Endereço consultado", address });
+    } catch (error: any) {
+      res.status(400).send(error.message);
+    }
+  };
 
-  //     res.status(201).send({message: "Dados do usuário", id: user.id, name: user.name, email: user.email})
+  public tokenValidation = async (req: Request, res: Response) => {
+    try {
+      const input: TokenDTO = {
+        token: req.headers.authorization as string,
+      };
 
-  //   } catch (error:any) {
-  //     res.status(400).send(error.message)
-  //   }
-  // }
+      const login = await this.userBusiness.tokenValidation(input);
+
+      res.status(201).send({ message: "Consulta realizada", login });
+    } catch (error: any) {
+      res.status(400).send(error.message);
+    }
+  };
 }

@@ -21,5 +21,8 @@ const userController = new UserController(userBusiness);
 
 userRouter.post("/signup", userController.signup);
 userRouter.post("/login", userController.login);
+userRouter.post("/signup/register-address", userController.registerAddress);
+userRouter.get("/user-address", userController.findAddressByToken);
 userRouter.put("/user-edit/:id", userController.editUser);
-userRouter.get("/my-profile", userController.findUserByToken)
+userRouter.get("/my-profile", userController.findUserByToken);
+userRouter.get("/user/logged", userController.tokenValidation);
