@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../constants/urls";
 
 const useRequestItemOrder = (initialData, url) => {
   const [data, setData] = useState(initialData);
